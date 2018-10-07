@@ -144,10 +144,9 @@ private:
 class player : public random_agent {
 public:
 	player(const std::string& args = "") : random_agent("name=dummy role=player " + args),
-		opcode({ 0, 1, 2, 3 }) {}
+		opcode({ 2, 3, 1, 0 }) {}
 
 	virtual action take_action(const board& before) {
-		std::shuffle(opcode.begin(), opcode.end(), engine);
 		for (int op : opcode) {
 			board::reward reward = board(before).slide(op);
 			pre_slide = op;
