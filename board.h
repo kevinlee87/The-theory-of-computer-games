@@ -72,36 +72,10 @@ public:
 		}
 	}
 
-	/*reward slide_left() {
-		board prev = *this;
-		reward score = 0;
-		for (int r = 0; r < 4; r++) {
-			auto& row = tile[r];
-			int top = 0, hold = 0;
-			for (int c = 0; c < 4; c++) {
-				int tile = row[c];
-				if (tile == 0) continue;
-				row[c] = 0;
-				if (hold) {
-					if (tile == hold) {
-						row[top++] = ++tile;
-						score += (1 << tile);
-						hold = 0;
-					} else {
-						row[top++] = hold;
-						hold = tile;
-					}
-				} else {
-					hold = tile;
-				}
-			}
-			if (hold) tile[r][top] = hold;
-		}
-		return (*this != prev) ? score : -1;
-	}*/
+	int index[15] = {0, 1, 2, 3, 6, 12, 24, 48, 96, 192, 384, 768, 1536, 3072, 6144};
+
 	reward slide_left() {
 		int combine_once = 0;	//use to record if that row has already combine once
-		int index[15] = {0, 1, 2, 3, 6, 12, 24, 48, 96, 192, 384, 768, 1536, 3072, 6144};
 		board prev = *this;
 		reward score = 0;
 		for (int r = 0; r < 4; r++) {
@@ -109,27 +83,23 @@ public:
 			combine_once = 0;
 			for (int c = 0; c < 4; c++) {
 				if (c == 0) continue;
+				if (row[c] == 0)	continue;
+				if (row[c-1] == 0){
+					row[c-1] = row[c];
+					row[c] = 0;
+					continue;
+				}
 				if(combine_once == 0){
 					if (row[c-1] == row[c] && row[c] > 2 ) {	// same number & number > 3
 						row[c-1] ++;
 						row[c] = 0;
 						score += index[row[c-1]];
 						combine_once = 1;
-					}else if ((row[c-1] + row[c]) == 3 && row[c-1] != 0 && row[c] != 0) {	// 1 + 2 = 3
+					}else if ((row[c-1] + row[c]) == 3) {	// 1 + 2 = 3
 						row[c-1] = 3;
 						row[c] = 0;
 						score += index[row[c-1]];
 						combine_once = 1;
-					}
-					else if(row[c-1] == 0){
-						row[c-1] = row[c];
-						row[c] = 0;
-					}
-				}
-				else{
-					if(row[c-1] == 0){
-						row[c-1] = row[c];
-						row[c] = 0;
 					}
 				}
 			}
