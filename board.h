@@ -2,6 +2,7 @@
 #include <array>
 #include <iostream>
 #include <iomanip>
+#include <math.h>
 
 /**
  * array-based board for 2048
@@ -72,8 +73,6 @@ public:
 		}
 	}
 
-	int index[15] = {0, 1, 2, 3, 6, 12, 24, 48, 96, 192, 384, 768, 1536, 3072, 6144};
-
 	reward slide_left() {
 		int combine_once = 0;	//use to record if that row has already combine once
 		board prev = *this;
@@ -93,12 +92,12 @@ public:
 					if (row[c-1] == row[c] && row[c] > 2 ) {	// same number & number > 3
 						row[c-1] ++;
 						row[c] = 0;
-						score += index[row[c-1]];
+						score += (pow(3,(row[c-1] - 2)) - pow(3,(row[c-1] - 3)) * 2);
 						combine_once = 1;
 					}else if ((row[c-1] + row[c]) == 3) {	// 1 + 2 = 3
 						row[c-1] = 3;
 						row[c] = 0;
-						score += index[row[c-1]];
+						score += row[c-1];
 						combine_once = 1;
 					}
 				}
